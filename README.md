@@ -1,6 +1,9 @@
 # react-native-dnd-list
 
-React Native DnD list sample implementation. It developed for my application and I am a bit lazy to create an npm module for it.
+React Native DnD list sample implementation. I have developed it for my application and I am a bit lazy to create an npm module for it.
+
+## Important Note 
+This implementation is not for lists with lot of items. It is based on ScrollView and all item rendered in the same time, there is no optimization implemented for large list, infinite scrolling, etc.
 
 ## Usage
 
@@ -23,7 +26,7 @@ You should extract the ```DnDList``` class as a standalone component. The usage 
 	noDragHandle={!true}
 />
 ```
-## Properties ##
+## Properties
 - **rows**:  
 array of items in the list. 
 - **itemSize**:  
@@ -46,7 +49,7 @@ the list is horizontal or vertical. Default false
 - **noDragHandle**:  
 if true it will not draw a drag handle on list.edit true. Instead of the whole row can be draggable. Good for small items, for example horizontal image stripe.
 
-## Instance Properties ##
+## Instance Properties
 
 - **editable**:  
 boolean. Turns drag/delete handle
