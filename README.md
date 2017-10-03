@@ -15,8 +15,8 @@ You should extract the ```DnDList``` class as a standalone component. The usage 
 <DnDList
 	ref={(ref) => this.list1 = ref}
 	rows={this.rows1}
-	itemSize={this.itemSize1}
-	deleteRow={this.deleteRow1}
+	itemSizes={this.itemSizes}
+	deleteRow={this.deleteRow}
 	renderRow={this.renderRow}
 	isDraggable={this.isDraggable}
 	isDeletable={this.isDraggable}
@@ -24,6 +24,8 @@ You should extract the ```DnDList``` class as a standalone component. The usage 
 	handleDrop={this.handleDrop1}
 	horizontal={!true}
 	noDragHandle={!true}
+	startDrag={this._startDrag}
+	stopDrag={this._stopDrag}
 />
 ```
 ## Properties
