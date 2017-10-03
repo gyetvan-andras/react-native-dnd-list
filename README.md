@@ -1,6 +1,7 @@
 # react-native-dnd-list
 
 React Native DnD list sample implementation. I have developed it for my application and I am a bit lazy to create an npm module for it. And, to be honest, I think it doesn't deserve it.
+However, if you do think it deserves a beer, you can send me you country's favorite. For postal details, drop me a comment :)
 
 ## Important Note 
 This implementation is not for lists with lot of items. It is based on ScrollView and all item rendered in the same time, there is no optimization implemented for large list, infinite scrolling, etc.
