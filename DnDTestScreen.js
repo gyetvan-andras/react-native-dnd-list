@@ -89,7 +89,7 @@ class DraggableRowComponent extends Component {
 	get start() {
 		let _start = 0
 		for (let i = 0; i < this.props.idx; i++) {
-			_start += this.context.shellContext.props.itemSize(i)
+			_start += this.context.shellContext.itemSize(i)
 		}
 		return _start
 	}
@@ -99,7 +99,7 @@ class DraggableRowComponent extends Component {
 	}
 
 	get size() {
-		return this.context.shellContext.props.itemSize(this.props.idx)
+		return this.context.shellContext.itemSize(this.props.idx)
 	}
 
 	containsPosition = (middle) => {
@@ -449,7 +449,8 @@ class DraggableRowComponent extends Component {
 
 class DnDList extends Component {
 	static propTypes = {
-		itemSize: PropTypes.func.isRequired,
+		itemSizes: PropTypes.array.isRequired,
+		// itemSize: PropTypes.func.isRequired,
 		rows: PropTypes.array.isRequired,
 		renderRow: PropTypes.func.isRequired,
 		isDraggable: PropTypes.func.isRequired,
@@ -458,6 +459,8 @@ class DnDList extends Component {
 		handleDrop: PropTypes.func.isRequired,
 		horizontal: PropTypes.any,
 		noDragHandle: PropTypes.any,
+		startDrag: PropTypes.func,
+		stopDrag: PropTypes.func,
 	}
 
 	_editable = false
@@ -526,6 +529,7 @@ class DnDList extends Component {
 			let dr = this.draggableRows[i]
 			dr.moveUp(draggableRow.size)
 		}
+		if(this.props.startDrag) this.props.startDrag()
 		draggableRow.scrollDelta = 0
 		this._dragMove(gestureState, draggableRow)
 	}
@@ -543,6 +547,7 @@ class DnDList extends Component {
 			}
 		}
 		this.currentPaceMakerRow = null
+		if(this.props.stopDrag) this.props.stopDrag()
 	}
 
 	_dragCancel = (gestureState, draggableRow) => {
@@ -575,14 +580,20 @@ class DnDList extends Component {
 		// console.log(rows)
 		this.scrollDelta = 0
 		this.setState({ rows: rows })
+		if(this.props.stopDrag) this.props.stopDrag()
+		
 		// this._reset(draggableRow)
+	}
+
+	itemSize = (idx) => {
+		return this.props.itemSizes[idx]
 	}
 
 	_dragMove = (gestureState, draggableRow) => {
 		this._checkEdges(gestureState, draggableRow)
 		let itemIdx = draggableRow.props.idx
 		let start = draggableRow.screenPos
-		let middle = start + (this.props.itemSize(itemIdx) / 2)
+		let middle = start + (this.itemSize(itemIdx) / 2)
 
 		let rowUnder = this.draggableRows.find((dr) => {
 			if (dr === draggableRow) return false
@@ -622,7 +633,6 @@ class DnDList extends Component {
 					}
 				}
 			}
-			// console.log('Row under', rowUnder.props.item)
 		}
 	}
 
@@ -733,7 +743,7 @@ class DnDList extends Component {
 		let rows = this._renderRows()
 		let contentSize = 0
 		for (let i = 0; i < this.state.rows.length; i++) {
-			contentSize += this.props.itemSize(i)
+			contentSize += this.itemSize(i)
 		}
 
 		return (
@@ -788,10 +798,15 @@ class DnDTestScreen extends Component {
 		super(props)
 		this.rows1 = []
 		this.rows2 = []
+		size1 = []
+		size2 = []
 		for (let i = 0; i < ROW_COUNT; i++) {
-			this.rows1.push({ height: 40 + (i * 3), key: i + 1, text: `${i + 1}`, draggable: (i % 2) === 0, accept: (i % 2) === 0 })
-			this.rows2.push({ height: 40 + (i * 3), key: i + 1, text: `${i + 1}`, draggable: (i % 2) === 0, accept: (i % 2) === 0 })
+			this.rows1.push({ height: 40 + (i * 3), key: i + 1, text: `${i + 1}`, draggable: true, accept: true })
+			this.rows2.push({ height: 40 + (i * 3), key: i + 1, text: `${i + 1}`, draggable: true, accept: true })
 		}
+		size1 = this.rows1.map(row => row.height)//.push(40 + (i * 3))
+		size2 = this.rows2.map(row => row.height)//.push(40 + (i * 3))
+		this.state = {itemSizes1:size1, itemSizes2: size2}
 	}
 	isDraggable = (item) => {
 		return item.draggable
@@ -811,15 +826,17 @@ class DnDTestScreen extends Component {
 	}
 
 	handleDrop1 = (from, to) => {
-		return arrayMove(this.rows1, from, to)
+		this.rows1 = arrayMove(this.rows1, from, to)
+		let size1 = this.rows1.map(row => row.height)//.push(40 + (i * 3))
+		this.setState({itemSizes1:size1})
+		return this.rows1
 	}
 
 	handleDrop2 = (from, to) => {
-		return arrayMove(this.rows2, from, to)
-	}
-
-	itemSize1 = (rowIdx) => {
-		return this.rows1[rowIdx].height
+		this.rows2 = arrayMove(this.rows2, from, to)
+		let size2 = this.rows2.map(row => row.height)//.push(40 + (i * 3))
+		this.setState({itemSizes2: size2})
+		return this.rows2
 	}
 
 	deleteRow1 = (idx) => {
@@ -827,13 +844,17 @@ class DnDTestScreen extends Component {
 		return this.rows1
 	}
 
-	itemSize2 = (rowIdx) => {
-		return this.rows2[rowIdx].height
-	}
-
 	deleteRow2 = (idx) => {
 		this.rows2.splice(idx, 2)
 		return this.rows2
+	}
+
+	_startDrag = () => {
+
+	}
+
+	_stopDrag = () => {
+		
 	}
 
 	render() {
@@ -849,7 +870,7 @@ class DnDTestScreen extends Component {
 						}}
 					ref={(ref) => this.list1 = ref}
 					rows={this.rows1}
-					itemSize={this.itemSize1}
+					itemSizes={this.state.itemSizes1}
 					deleteRow={this.deleteRow1}
 					renderRow={this.renderRow}
 					isDraggable={this.isDraggable}
@@ -858,6 +879,9 @@ class DnDTestScreen extends Component {
 					handleDrop={this.handleDrop1}
 					horizontal={!true}
 					noDragHandle={!true}
+					startDrag={this._startDrag}
+					stopDrag={this._stopDrag}
+
 				/>
 				<DnDList
 					style={
@@ -867,7 +891,7 @@ class DnDTestScreen extends Component {
 						}}
 					ref={(ref) => this.list2 = ref}
 					rows={this.rows2}
-					itemSize={this.itemSize2}
+					itemSizes={this.state.itemSizes2}
 					deleteRow={this.deleteRow2}
 					renderRow={this.renderRow}
 					isDraggable={this.isDraggable}
@@ -876,6 +900,8 @@ class DnDTestScreen extends Component {
 					handleDrop={this.handleDrop2}
 					horizontal={true}
 					noDragHandle={true}
+					startDrag={this._startDrag}
+					stopDrag={this._stopDrag}
 				/>
 				<TouchableOpacity
 					style={{ flex: 0, margin: 10 }}

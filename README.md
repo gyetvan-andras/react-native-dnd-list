@@ -29,8 +29,8 @@ You should extract the ```DnDList``` class as a standalone component. The usage 
 ## Properties
 - **rows**:  
 array of items in the list. 
-- **itemSize**:  
-callback function to get the size of the item. Parameter: item index. Returns the size of the given item (width if horizontal, height if vertical)
+- **itemSizes**:  
+array of item sizes (width if horizontal, height if vertical)
 - **deleteRow**:  
 callback function to delete a row. Parameter: item index. Returns the new item array (see ***rows***)
 - **renderRow**:  
@@ -48,6 +48,10 @@ Parameters:from, to indexes. Returns the new item array (see ***rows***)
 the list is horizontal or vertical. Default false
 - **noDragHandle**:  
 if true it will not draw a drag handle on list.edit true. Instead of the whole row can be draggable. Good for small items, for example horizontal image stripe.
+- **startDrag**:  
+callback function which is called when a drag starts
+- **endDrag**:  
+callback function which is called when a drag ends
 
 ## Instance Properties
 
