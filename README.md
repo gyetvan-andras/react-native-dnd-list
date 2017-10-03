@@ -13,15 +13,15 @@ You should extract the ```DnDList``` class as a standalone component. The usage 
 
 ```javascript
 <DnDList
-	ref={(ref) => this.list1 = ref}
-	rows={this.rows1}
+	ref={(ref) => this.list = ref}
+	rows={this.rows}
 	itemSizes={this.itemSizes}
 	deleteRow={this.deleteRow}
 	renderRow={this.renderRow}
 	isDraggable={this.isDraggable}
 	isDeletable={this.isDraggable}
 	isAcceptItem={this.isAcceptItem}
-	handleDrop={this.handleDrop1}
+	handleDrop={this.handleDrop}
 	horizontal={!true}
 	noDragHandle={!true}
 	startDrag={this._startDrag}
