@@ -32,7 +32,7 @@ You should extract the ```DnDList``` class as a standalone component. The usage 
 - **rows**:  
 array of items in the list. 
 - **itemSizes**:  
-array of item sizes (width if horizontal, height if vertical)
+array of item sizes (width when horizontal, height when vertical)
 - **deleteRow**:  
 callback function to delete a row. Parameter: item index. Returns the new item array (see ***rows***)
 - **renderRow**:  
