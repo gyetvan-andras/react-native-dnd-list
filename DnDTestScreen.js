@@ -476,6 +476,10 @@ class DnDList extends Component {
 		this.currentPaceMakerRow = null
 		this.scrollContentOffset = { y: 0, x: 0 }
 	}
+	
+	componentWillReceiveProps({rows}) {
+		this.setState({ rows: rows })
+	}
 
 	get editable() {
 		return this._editable
